@@ -6,6 +6,8 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/sky-take-out-server/pom.xml" />
+        <option value="$PROJECT_DIR$/sky-take-out-model/pom.xml" />
+        <option value="$PROJECT_DIR$/sky-take-out-common/pom.xml" />
       </list>
     </option>
   </component>
