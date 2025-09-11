@@ -11,3 +11,27 @@ mybatis:
       type-aliases-package: com.pluto.model
       configuration:
             map-underscore-to-camel-case: true
+
+springdoc:
+      swagger-ui:
+        path: /swagger-ui.html
+        tags-sorter: alpha
+        operations-sorter: alpha
+      api-docs:
+            path: /v3/api-docs
+      group-configs:
+            - group: "Admin"
+              paths-to-match:
+                - "/**"
+              packages-to-scan: com.pluto.controller.admin
+
+knife4j:
+      enable: true
+      setting:
+            language: en
+            enable-version: true
+            enable-search: true
+
+jwt:
+      secret: thisdasdas-is-a-dsadasdvery-dasdlosadng-secret-for-jwt-generation-and-exposhuog-sadfes
+      expiry: 60 * 60 * 24 # 1 day

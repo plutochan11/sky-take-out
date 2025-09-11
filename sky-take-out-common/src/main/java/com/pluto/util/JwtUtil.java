@@ -3,6 +3,7 @@ package com.pluto.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -11,9 +12,11 @@ import java.util.Date;
 import java.util.Map;
 
 public class JwtUtil {
-	private static final String secret = "Secret-key-for-java-web-to-make-it-long-enough-for-safety";
+	@Value("${jwt.secret}")
+	private static String secret;
 	private static final SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-	private static final Long expiration = 1 * 60 * 60L; // 1 hour
+	@Value("${jwt.expiry}")
+	private static Long expiration;
 
 	/**
 	 * Generate a JWT token with the given claims.
