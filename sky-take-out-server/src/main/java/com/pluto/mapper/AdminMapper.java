@@ -5,14 +5,22 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface AdminMapper {
 	@Select("""
 	select id, username, password, name, created_at, updated_at
 	from admin
+""")
+	List<Admin> findAll();
+
+	@Select("""
+	select id, username, password, name, created_at, updated_at
+	from admin
 	where username = #{username}
 """)
-	Admin getByUsername(String username);
+	Admin findOneByUsername(String username);
 
 	/**
 	 * Check if an admin with the given username exists
@@ -44,4 +52,6 @@ public interface AdminMapper {
 	values (#{username}, #{password}, #{name})
 """)
 	void add(Admin admin);
+
+
 }

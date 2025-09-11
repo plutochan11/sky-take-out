@@ -1,5 +1,4 @@
-**Test**
-
+**/test/
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -38,3 +37,4 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/sky-take-out-server/src/test/

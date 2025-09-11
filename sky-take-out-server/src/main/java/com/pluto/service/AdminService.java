@@ -1,9 +1,11 @@
 package com.pluto.service;
 
+import com.github.pagehelper.PageInfo;
 import com.pluto.exception.AccountNotFoundExecption;
 import com.pluto.exception.DuplicateUsernameException;
 import com.pluto.exception.IncorrectPasswordException;
 import com.pluto.model.Admin;
+import org.springframework.http.ResponseEntity;
 
 public interface AdminService {
 
@@ -42,4 +44,12 @@ public interface AdminService {
 	 * @exception DuplicateUsernameException An DuplicateUsernameException if this username is already taken
 	 */
 	void add(Admin admin) throws DuplicateUsernameException;
+
+	/**
+	 * Return a page of admins
+	 * @param pageNo The page number
+	 * @param pageSize The page size (how many records in a page)
+	 * @return A page of admins
+	 */
+	PageInfo<Admin> list(Integer pageNo, Integer pageSize);
 }

@@ -35,3 +35,7 @@ knife4j:
 jwt:
       secret: thisdasdas-is-a-dsadasdvery-dasdlosadng-secret-for-jwt-generation-and-exposhuog-sadfes
       expiry: 60 * 60 * 24 # 1 day
+
+pagehelper:
+      reasonable: true
+      auto-dialect: true

@@ -1,5 +1,7 @@
 package com.pluto.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.pluto.enums.ErrorMessage;
 import com.pluto.exception.AccountNotFoundExecption;
 import com.pluto.exception.DuplicateUsernameException;
@@ -10,6 +12,8 @@ import com.pluto.util.JwtUtil;
 import com.pluto.util.PasswordHasher;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -31,7 +35,7 @@ public class AdminServiceImpl implements AdminService{
 
 	@Override
 	public void verifyPassword(String username, String password) {
-		String truePassword = adminMapper.getByUsername(username).getPassword();
+		String truePassword = adminMapper.findOneByUsername(username).getPassword();
 		if (passwordHasher.verify(password, truePassword)) {
 			return;
 		} else {
@@ -41,7 +45,7 @@ public class AdminServiceImpl implements AdminService{
 
 	@Override
 	public String generateJwt(String username) {
-		Admin admin = adminMapper.getByUsername(username);
+		Admin admin = adminMapper.findOneByUsername(username);
 		if (admin != null) { // Proceed only if the admin is found
 			Map<String, String> claims = Map.of(
 				  "admin id", String.valueOf(admin.getId()),
@@ -69,5 +73,12 @@ public class AdminServiceImpl implements AdminService{
 		String hashedPassword = passwordHasher.hash(admin.getPassword());
 		admin.setPassword(hashedPassword);
 		adminMapper.add(admin);
+	}
+
+	@Override
+	public PageInfo<Admin> list(Integer pageNo, Integer pageSize) {
+		PageHelper.startPage(pageNo, pageSize);
+		List<Admin> admins = adminMapper.findAll();
+		return new PageInfo<>(admins);
 	}
 }
