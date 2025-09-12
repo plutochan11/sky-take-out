@@ -2,8 +2,14 @@ package com.pluto.controller.admin;
 
 import com.github.pagehelper.PageInfo;
 import com.pluto.model.Admin;
+import com.pluto.model.dto.AdminAddDto;
+import com.pluto.model.dto.AdminListDto;
+import com.pluto.model.dto.AdminLoginDto;
 import com.pluto.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,38 +18,43 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/management/admin")
+@Tag(name = "Admin", description = "Admin related APIs")
 public class AdminController {
 	@Resource
 	private AdminService adminService;
 
 	@Operation(summary = "Add a new admin")
 	@PostMapping("/add")
-	public ResponseEntity<?> add(@RequestBody Admin admin) {
+	public ResponseEntity<?> add(@RequestBody AdminAddDto adminAddDto) {
 		// Check if there's already an admin with the same username
-		adminService.checkUsername(admin.getUsername());
+		adminService.checkUsername(adminAddDto.getUsername());
 
-		adminService.add(admin);
-		log.info("Added a new admin({}, {})", admin.getUsername(), admin.getName());
+		adminService.add(adminAddDto);
+		log.info("Added a new admin(username: {}, name: {})", adminAddDto.getUsername(), adminAddDto.getName());
 		return ResponseEntity.ok().build();
 	}
 
 	@Operation(summary = "Admin login")
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody Admin admin) {
+	@ApiResponses(value = {
+		  @ApiResponse(responseCode = "200", description = "Login successful, return a JWT token"),
+		  @ApiResponse(responseCode = "404", description = "Admin account not found or incorrect password")
+	})
+	public ResponseEntity<String> login(@RequestBody AdminLoginDto adminLoginDto) {
 		// Verify admin by username and password
-		adminService.verifyUsername(admin.getUsername());
-		adminService.verifyPassword(admin.getUsername(), admin.getPassword());
+		adminService.verifyUsername(adminLoginDto.getUsername());
+		adminService.verifyPassword(adminLoginDto.getUsername(), adminLoginDto.getPassword());
 
 		// Generate a JWT token with admin id, username and the real admin name
-		String jwt = adminService.generateJwt(admin.getUsername());
-		log.info("Admin({}, {}) logged in", admin.getUsername(), admin.getName());
+		String jwt = adminService.generateJwt(adminLoginDto.getUsername());
+		log.info("Admin(username: {}) logged in", adminLoginDto.getUsername());
 		return ResponseEntity.ok(jwt);
 	}
 
+	@ApiResponse(responseCode = "200", description = "Return paginated admin info and pagination details")
 	@Operation(summary = "Return admin info with pagination")
-	@GetMapping("/list")
-	public ResponseEntity<PageInfo<Admin>> list(@RequestParam(defaultValue = "0") Integer pageNo,
-	                                            @RequestParam(defaultValue = "10") Integer pageSize) {
-		return ResponseEntity.ok(adminService.list(pageNo, pageSize));
+	@PostMapping("/list")
+	public ResponseEntity<PageInfo<Admin>> list(@RequestBody AdminListDto adminListDto) {
+		return ResponseEntity.ok(adminService.list(adminListDto));
 	}
 }

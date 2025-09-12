@@ -8,6 +8,8 @@ import com.pluto.exception.DuplicateUsernameException;
 import com.pluto.exception.IncorrectPasswordException;
 import com.pluto.mapper.AdminMapper;
 import com.pluto.model.Admin;
+import com.pluto.model.dto.AdminAddDto;
+import com.pluto.model.dto.AdminListDto;
 import com.pluto.util.JwtUtil;
 import com.pluto.util.PasswordHasher;
 import jakarta.annotation.Resource;
@@ -69,16 +71,20 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public void add(Admin admin) {
-		String hashedPassword = passwordHasher.hash(admin.getPassword());
-		admin.setPassword(hashedPassword);
-		adminMapper.add(admin);
+	public void add(AdminAddDto adminAddDto) {
+		String hashedPassword = passwordHasher.hash(adminAddDto.getPassword());
+		adminAddDto.setPassword(hashedPassword);
+		adminMapper.add(adminAddDto);
 	}
 
 	@Override
-	public PageInfo<Admin> list(Integer pageNo, Integer pageSize) {
-		PageHelper.startPage(pageNo, pageSize);
-		List<Admin> admins = adminMapper.findAll();
+	public PageInfo<Admin> list(AdminListDto adminListDto) {
+		PageHelper.startPage(adminListDto.pageNo(), adminListDto.pageSize());
+		if (adminListDto.name() == null) {
+			List<Admin> admins = adminMapper.findAll();
+			return new PageInfo<>(admins);
+		}
+		List<Admin> admins = adminMapper.findByName(adminListDto.name());
 		return new PageInfo<>(admins);
 	}
 }

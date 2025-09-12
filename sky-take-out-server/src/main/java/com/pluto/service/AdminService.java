@@ -5,7 +5,8 @@ import com.pluto.exception.AccountNotFoundExecption;
 import com.pluto.exception.DuplicateUsernameException;
 import com.pluto.exception.IncorrectPasswordException;
 import com.pluto.model.Admin;
-import org.springframework.http.ResponseEntity;
+import com.pluto.model.dto.AdminAddDto;
+import com.pluto.model.dto.AdminListDto;
 
 public interface AdminService {
 
@@ -40,10 +41,10 @@ public interface AdminService {
 
 	/**
 	 * Add a new admin
-	 * @param admin The admin to be added
+	 * @param adminAddDto The adminAddDto to be added
 	 * @exception DuplicateUsernameException An DuplicateUsernameException if this username is already taken
 	 */
-	void add(Admin admin) throws DuplicateUsernameException;
+	void add(AdminAddDto adminAddDto) throws DuplicateUsernameException;
 
 	/**
 	 * Return a page of admins
@@ -51,5 +52,5 @@ public interface AdminService {
 	 * @param pageSize The page size (how many records in a page)
 	 * @return A page of admins
 	 */
-	PageInfo<Admin> list(Integer pageNo, Integer pageSize);
+	PageInfo<Admin> list(AdminListDto adminListDto);
 }
