@@ -92,6 +92,8 @@ public class AdminServiceImpl implements AdminService{
 	public Admin findById(Integer id) {
 		Admin admin = adminMapper.findById(id);
 		if (admin != null) {
+			// Hide the password before returning
+			admin.setPassword("***");
 			return admin;
 		} else {
 			throw new AccountNotFoundExecption(ErrorMessage.USER_NOT_FOUND.getMessage());

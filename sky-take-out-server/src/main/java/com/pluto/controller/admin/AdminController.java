@@ -24,7 +24,7 @@ public class AdminController {
 	private AdminService adminService;
 
 	@Operation(summary = "Update the admin info")
-	@PostMapping("/update")
+	@PutMapping("/update")
 	public ResponseEntity<?> update(@RequestBody Admin admin) {
 		adminService.update(admin);
 		return ResponseEntity.ok().build();
