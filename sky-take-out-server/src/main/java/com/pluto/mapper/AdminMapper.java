@@ -5,8 +5,10 @@ import com.pluto.model.dto.AdminAddDto;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface AdminMapper {
@@ -60,4 +62,20 @@ public interface AdminMapper {
 	where name like concat(''%'', #{name}, ''%'')
 """)
 	List<Admin> findByName(String name);
+
+	@Select("""
+	  select id, username, password, name, created_at, updated_at
+	  from admin
+	  where id = #{id}
+""")
+	Admin findById(Integer id);
+
+	@Update("""
+	update admin set 
+           username = #{username},
+           password = #{password},
+           name = #{name}
+	where id = #{id}
+""")
+	void updateById(Admin admin);
 }

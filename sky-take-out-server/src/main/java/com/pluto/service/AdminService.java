@@ -53,4 +53,18 @@ public interface AdminService {
 	 * @return A page of admins
 	 */
 	PageInfo<Admin> list(AdminListDto adminListDto);
+
+	/**
+	 * Return the admin info by id
+	 * @param id The admin id
+	 * @return The admin info
+	 */
+	Admin findById(Integer id);
+
+	/**
+	 * Update the admin info
+	 * @param admin The admin info to be updated
+	 * Note: username cannot be updated
+	 */
+	void update(Admin admin);
 }

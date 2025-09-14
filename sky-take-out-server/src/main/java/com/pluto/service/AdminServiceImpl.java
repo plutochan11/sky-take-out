@@ -87,4 +87,32 @@ public class AdminServiceImpl implements AdminService{
 		List<Admin> admins = adminMapper.findByName(adminListDto.name());
 		return new PageInfo<>(admins);
 	}
+
+	@Override
+	public Admin findById(Integer id) {
+		Admin admin = adminMapper.findById(id);
+		if (admin != null) {
+			return admin;
+		} else {
+			throw new AccountNotFoundExecption(ErrorMessage.USER_NOT_FOUND.getMessage());
+		}
+	}
+
+	@Override
+	public void update(Admin admin) {
+		// Check if an admin with the given id exists
+		Admin originalAdmin = adminMapper.findById(admin.getId());
+		if (originalAdmin == null) {
+			throw new AccountNotFoundExecption(ErrorMessage.USER_NOT_FOUND.getMessage());
+		}
+		// Verify if the new username is taken
+		if (adminMapper.existsByUsername(admin.getUsername()) != 0) {
+			throw new IllegalArgumentException("Username has been used by another admin");
+		}
+
+		// Hash the password before the update
+		String hashedPassword = passwordHasher.hash(admin.getPassword());
+		admin.setPassword(hashedPassword);
+		adminMapper.updateById(admin);
+	}
 }

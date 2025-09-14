@@ -23,6 +23,20 @@ public class AdminController {
 	@Resource
 	private AdminService adminService;
 
+	@Operation(summary = "Update the admin info")
+	@PostMapping("/update")
+	public ResponseEntity<?> update(@RequestBody Admin admin) {
+		adminService.update(admin);
+		return ResponseEntity.ok().build();
+	}
+
+	@Operation(summary = "Find an admin info by id")
+	@ApiResponse(responseCode = "200", description = "Return the admin info")
+	@GetMapping("/find/{id}")
+	public ResponseEntity<Admin> findById(@PathVariable Integer id) {
+		return ResponseEntity.ok(adminService.findById(id));
+	}
+
 	@Operation(summary = "Add a new admin")
 	@PostMapping("/add")
 	public ResponseEntity<?> add(@RequestBody AdminAddDto adminAddDto) {
