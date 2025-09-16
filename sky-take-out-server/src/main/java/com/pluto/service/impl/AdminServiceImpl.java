@@ -1,4 +1,4 @@
-package com.pluto.service;
+package com.pluto.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -10,6 +10,7 @@ import com.pluto.mapper.AdminMapper;
 import com.pluto.model.Admin;
 import com.pluto.model.dto.AdminAddDto;
 import com.pluto.model.dto.AdminListDto;
+import com.pluto.service.AdminService;
 import com.pluto.util.JwtUtil;
 import com.pluto.util.PasswordHasher;
 import jakarta.annotation.Resource;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AdminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService {
 	@Resource
 	private AdminMapper adminMapper;
 	@Resource

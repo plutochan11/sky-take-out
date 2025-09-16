@@ -8,10 +8,15 @@ import com.pluto.model.dto.DishDto;
 import com.pluto.model.dto.DishListDto;
 import com.pluto.service.DishService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,25 +41,34 @@ public class DishController {
 	}
 
 	@ApiResponse(responseCode = "200", description = "Return paginated dish info and pagination details")
-	@Operation(summary = "Return dish info with pagination")
-	@PostMapping("/list")
-	public ResponseEntity<PageInfo<Dish>> list(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+	@Operation(summary = "Retrieve dish info with pagination")
+	@io.swagger.v3.oas.annotations.parameters.RequestBody(
 		  description = "Required fields: pageNo, pageSize. Optional filters: name (partial match), status, classificationId, mealId."
 	)
-		  @RequestBody DishListDto dishListDto) {
+	@PostMapping("/list")
+	public ResponseEntity<PageInfo<Dish>> list(@NotNull @NotBlank @RequestBody DishListDto dishListDto) {
 		return ResponseEntity.ok(dishService.list(dishListDto));
 	}
 
 	@Operation(summary = "Find a dish info by ID")
+	@ApiResponses(
+		  {
+			    @ApiResponse(responseCode = "200"),
+			    @ApiResponse(responseCode = "404")
+		  }
+	)
 	@GetMapping("/{id}")
-	@ApiResponse(responseCode = "404", description = "Dish not found")
 	public ResponseEntity<Dish> findById(@PathVariable Integer id) {
 		return ResponseEntity.ok(dishService.findById(id));
 	}
 
 	@Operation(summary = "Add a new dish")
 	@ApiResponses(
-		  @ApiResponse(responseCode = "409", description = "Conflict: Dish name already exists")
+		  {
+			    @ApiResponse(responseCode = "200"),
+			    @ApiResponse(responseCode = "409",
+				      content = @Content(examples = @ExampleObject(value = "Conflict: Dish name already exists")))
+		  }
 	)
 	@PostMapping("/add")
 	public ResponseEntity<?> add(@io.swagger.v3.oas.annotations.parameters.RequestBody(

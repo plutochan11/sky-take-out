@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pluto.mapper.MealMapper">
+
+      <select id="findWithFilter" resultType="com.pluto.model.Meal">
+            select id, name, status, created_at, updated_at
+            from meal
+            <where>
+                  <if test="name != null and name != ''">
+                        and name like concat('%', #{name}, '%')
+                  </if>
+                  <if test="status != null and status != ''">
+                        and status = #{status}
+                  </if>
+            </where>
+      </select>
+</mapper>

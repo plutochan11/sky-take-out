@@ -1,4 +1,4 @@
-package com.pluto.service;
+package com.pluto.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -7,11 +7,12 @@ import com.pluto.mapper.DishMapper;
 import com.pluto.model.Dish;
 import com.pluto.model.dto.DishDto;
 import com.pluto.model.dto.DishListDto;
+import com.pluto.service.DishService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DishServiceImpl implements DishService{
+public class DishServiceImpl implements DishService {
 	@Resource
 	private DishMapper dishMapper;
 

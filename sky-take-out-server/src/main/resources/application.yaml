@@ -1,28 +1,29 @@
 spring:
-      application:
-            name: sky-take-out-server
-      datasource:
-            driver-class-name: com.mysql.cj.jdbc.Driver
-            url: jdbc:mysql://localhost:3306/sky_take_out
-            username: root
-            password: Chen@0216
+    application:
+        name: sky-take-out-server
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/sky_take_out
+        username: root
+        password: Chen@0216
 
 mybatis:
-      type-aliases-package: com.pluto.model
-      configuration:
-            map-underscore-to-camel-case: true
+    type-aliases-package: com.pluto.model
+    configuration:
+        map-underscore-to-camel-case: true
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #jwt:
 #      secret: thisdasdas-is-a-dsadasdvery-dasdlosadng-secret-for-jwt-generation-and-exposhuog-sadfes
 #      expiration: 60 * 60 * 24 # 1 day
 
 pagehelper:
-      reasonable: true
-      auto-dialect: true
+    reasonable: true
+    auto-dialect: true
 
 springdoc:
-      api-docs:
-            path: /api-docs
-      swagger-ui:
-            path: /docs.html
-            operations-sorter: alpha
+    api-docs:
+        path: /api-docs
+    swagger-ui:
+        path: /docs.html
+        operations-sorter: alpha
