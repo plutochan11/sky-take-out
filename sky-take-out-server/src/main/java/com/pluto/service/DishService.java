@@ -1,6 +1,9 @@
 package com.pluto.service;
 
+import com.github.pagehelper.PageInfo;
+import com.pluto.model.Dish;
 import com.pluto.model.dto.DishDto;
+import com.pluto.model.dto.DishListDto;
 
 public interface DishService {
 	/**
@@ -9,4 +12,30 @@ public interface DishService {
 	 */
 	void add(DishDto dishDto);
 
+	/**
+	 * Find a dish by its ID
+	 * @param id The dish id
+	 * @return The dish info
+	 */
+	Dish findById(Integer id);
+
+	/**
+	 * List dishes with pagination and optional filters
+	 *
+	 * @param dishListDto The filter and pagination info
+	 * @return Paginated list of dishes
+	 */
+	PageInfo<Dish> list(DishListDto dishListDto);
+
+	/**
+	 * Toggle the status of a dish (e.g., available/unavailable)
+	 * @param id The dish id
+	 */
+	void toggleStatus(Integer id);
+
+	/**
+	 * Delete a dish by its ID
+	 * @param id The dish id
+	 */
+	void delete(Integer id);
 }

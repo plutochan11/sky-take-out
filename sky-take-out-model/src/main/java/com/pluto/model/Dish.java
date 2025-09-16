@@ -15,7 +15,7 @@ public class Dish {
 	private String description;
 	private Short status;
 	private Integer classificationId;
-	private Integer categoryId;
+	private Integer mealId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }
