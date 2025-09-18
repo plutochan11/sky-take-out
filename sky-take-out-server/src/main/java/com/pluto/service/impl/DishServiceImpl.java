@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.pluto.exception.DishNotFoundException;
 import com.pluto.mapper.DishMapper;
 import com.pluto.model.Dish;
+import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishDto;
 import com.pluto.model.dto.DishListDto;
 import com.pluto.service.DishService;
@@ -15,9 +16,13 @@ import org.springframework.stereotype.Service;
 public class DishServiceImpl implements DishService {
 	@Resource
 	private DishMapper dishMapper;
+	@Resource
+	private AliyunOssFileUploadService fileUploadService;
 
 	@Override
-	public void add(DishDto dishDto) {
+	public void add(DishAddDto dto) {
+		String imageUrl = fileUploadService.upload(dto.getImage());
+
 		// Check if the dish name already exists
 		dishMapper.add(dishDto);
 	}

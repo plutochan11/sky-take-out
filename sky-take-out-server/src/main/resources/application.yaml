@@ -27,3 +27,9 @@ springdoc:
     swagger-ui:
         path: /docs.html
         operations-sorter: alpha
+        
+aliyun:
+    oss:
+        endpoint: oss-cn-guangzhou.aliyuncs.com
+        bucket-name: java-web-itheima-111
+        region: cn-guangzhou

@@ -15,6 +15,7 @@ public interface DishClassificationMapper {
 """)
 	List<DishClassification> findAll();
 
+	@Options(useGeneratedKeys = true, keyProperty = "id")
 	@Insert("""
 	insert into dish_classification(name, status)
 	    values(#{name}, #{status})
@@ -48,5 +49,5 @@ public interface DishClassificationMapper {
 	delete from dish_classification
 	    where id = #{id}
 """)
-	void deleteById(Integer id);
+	Integer deleteById(Integer id);
 }

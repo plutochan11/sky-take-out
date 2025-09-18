@@ -45,7 +45,7 @@ public class MealController {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Add a new meal")
+	@Operation(summary = "Add a new meal with associated dishes")
 	@PostMapping("/add")
 	public ResponseEntity<?> add(@RequestBody MealAddDto mealAddDto) {
 		mealService.add(mealAddDto);

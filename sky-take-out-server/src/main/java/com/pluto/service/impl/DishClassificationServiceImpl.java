@@ -2,30 +2,52 @@ package com.pluto.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pluto.context.RequestContext;
 import com.pluto.exception.DishClassificationNotFoundException;
+import com.pluto.mapper.DishClassificationDishMapper;
 import com.pluto.mapper.DishClassificationMapper;
 import com.pluto.model.DishClassification;
 import com.pluto.model.dto.DishClassificationAddDto;
 import com.pluto.model.dto.DishClassificationListDto;
 import com.pluto.service.DishClassificationService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
+@Slf4j
 @Service
 public class DishClassificationServiceImpl implements DishClassificationService {
 	@Resource
 	private DishClassificationMapper dishClassificationMapper;
+	@Resource
+	private DishClassificationDishMapper dishClassificationDishMapper;
 
 	@Override
 	public List<DishClassification> findAll() {
 		return dishClassificationMapper.findAll();
 	}
 
+	@Transactional
 	@Override
 	public void add(DishClassificationAddDto dishClassificationAddDto) {
 		dishClassificationMapper.add(dishClassificationAddDto);
+		Integer dishClassificationId = dishClassificationAddDto.getId();
+		dishClassificationAddDto.getDishIds().forEach(dishId ->
+			  dishClassificationDishMapper.add(dishClassificationId, dishId));
+
+		Integer manipulatorId = RequestContext.getRequestUserId();
+		if (Objects.nonNull(manipulatorId)) {
+			log.info("A dish classification(id: {}, name: {}) is added by admin(id: {}).",
+				  dishClassificationId, dishClassificationAddDto.getName(), manipulatorId);
+		} else {
+			log.info("A dish classification(id: {}, name: {}) is added by an unknown admin.",
+				  dishClassificationId, dishClassificationAddDto.getName());
+		}
+
 	}
 
 	@Override
@@ -57,9 +79,7 @@ public class DishClassificationServiceImpl implements DishClassificationService 
 
 	@Override
 	public void delete(Integer id) {
-		if (dishClassificationMapper.existsById(id) == 1) {
-			dishClassificationMapper.deleteById(id);
-		} else {
+		if (!Objects.equals(1, dishClassificationMapper.deleteById(id))) {
 			throw new DishClassificationNotFoundException(
 				  "Dish classification with ID " + id + " not found.");
 		}

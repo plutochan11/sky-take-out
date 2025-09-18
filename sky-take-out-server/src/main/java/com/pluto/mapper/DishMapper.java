@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface DishMapper {
-	void add(DishDto dishDto);
+	void add(Dish dish);
 
 	@Select("""
 	select id, name, price, image, description, status, classification_id, 

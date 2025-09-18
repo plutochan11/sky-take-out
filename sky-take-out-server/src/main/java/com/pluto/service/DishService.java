@@ -2,6 +2,7 @@ package com.pluto.service;
 
 import com.github.pagehelper.PageInfo;
 import com.pluto.model.Dish;
+import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishDto;
 import com.pluto.model.dto.DishListDto;
 
@@ -10,7 +11,7 @@ public interface DishService {
 	 * Add a new dish
 	 * @param dishDto The dish info to be added
 	 */
-	void add(DishDto dishDto);
+	void add(DishAddDto dishDto);
 
 	/**
 	 * Find a dish by its ID

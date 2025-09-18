@@ -2,7 +2,9 @@ package com.pluto.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pluto.exception.DishNotFoundException;
 import com.pluto.exception.MealNotFoundException;
+import com.pluto.mapper.MealDishMapper;
 import com.pluto.mapper.MealMapper;
 import com.pluto.model.Meal;
 import com.pluto.model.dto.MealAddDto;
@@ -12,6 +14,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Service
@@ -19,17 +22,20 @@ import java.util.List;
 public class MealServiceImpl implements MealService {
 	@Resource
 	private MealMapper mealMapper;
+	@Resource
+	private MealDishMapper mealDishMapper;
 
+	@Transactional
 	@Override
 	public void add(MealAddDto mealAddDto) {
 		mealMapper.add(mealAddDto);
+		Integer mealId = mealAddDto.getId();
+		mealAddDto.getDishes().forEach((dishId, quantity) -> mealDishMapper.add(mealId, dishId, quantity));
 	}
 
 	@Override
 	public void delete(Integer id) {
-		if (mealMapper.existsById(id) == 1) {
-			mealMapper.deleteById(id);
-		} else {
+		if (mealMapper.deleteById(id) == 0) {
 			throw new MealNotFoundException("Meal with ID " + id + " not found.");
 		}
 	}

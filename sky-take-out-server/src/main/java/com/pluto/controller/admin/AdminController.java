@@ -30,7 +30,7 @@ public class AdminController {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Find an admin info by id")
+	@Operation(summary = "Find the admin info by id")
 	@ApiResponse(responseCode = "200", description = "Return the admin info")
 	@GetMapping("/find/{id}")
 	public ResponseEntity<Admin> findById(@PathVariable Integer id) {
@@ -48,7 +48,7 @@ public class AdminController {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Admin login")
+	@Operation(summary = "Login")
 	@PostMapping("/login")
 	@ApiResponses(value = {
 		  @ApiResponse(responseCode = "200", description = "Login successful, return a JWT token"),
@@ -59,14 +59,15 @@ public class AdminController {
 		adminService.verifyUsername(adminLoginDto.getUsername());
 		adminService.verifyPassword(adminLoginDto.getUsername(), adminLoginDto.getPassword());
 
+		// TODO Consider leveraging Spring Security for authentication and authorization
 		// Generate a JWT token with admin id, username and the real admin name
 		String jwt = adminService.generateJwt(adminLoginDto.getUsername());
 		log.info("Admin(username: {}) logged in", adminLoginDto.getUsername());
 		return ResponseEntity.ok(jwt);
 	}
 
-	@ApiResponse(responseCode = "200", description = "Return paginated admin info and pagination details")
-	@Operation(summary = "Return admin info with pagination")
+	@ApiResponse(responseCode = "200")
+	@Operation(summary = "List admins with pagination and filters")
 	@PostMapping("/list")
 	public ResponseEntity<PageInfo<Admin>> list(@RequestBody AdminListDto adminListDto) {
 		return ResponseEntity.ok(adminService.list(adminListDto));

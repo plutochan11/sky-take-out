@@ -55,14 +55,14 @@ public class DishClassificationController {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Retrieve dish classifications with pagination and optional filters")
+	@Operation(summary = "List dish classifications with pagination and optional filters")
 	@PostMapping("/list")
 	public ResponseEntity<PageInfo<DishClassification>> findWithPaginationAndFilter(
 		  @RequestBody DishClassificationListDto dishClassificationListDto) {
 		return ResponseEntity.ok(dishClassificationService.findWithPaginationAndFilter(dishClassificationListDto));
 	}
 
-	@Operation(summary = "Retrieve all dish classification")
+	@Operation(summary = "List all dish classification")
 	@GetMapping("/list")
 	public ResponseEntity<List<DishClassification>> findAll() {
 		return ResponseEntity.ok(dishClassificationService.findAll());

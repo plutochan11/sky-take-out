@@ -15,6 +15,7 @@ public interface MealMapper {
 	""")
 	List<Meal> findAll();
 
+	@Options(useGeneratedKeys = true, keyProperty = "id")
 	@Insert("""
 	insert into meal(name, status)
 	    values(#{name}, #{status})
@@ -48,5 +49,5 @@ public interface MealMapper {
 	delete from meal
 	    where id = #{id}
 	""")
-	void deleteById(Integer id);
+	Integer deleteById(Integer id);
 }

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.pluto.model.Admin;
 import com.pluto.model.Dish;
 import com.pluto.model.dto.AdminListDto;
+import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishDto;
 import com.pluto.model.dto.DishListDto;
 import com.pluto.service.DishService;
@@ -40,13 +41,13 @@ public class DishController {
 		return ResponseEntity.ok().build();
 	}
 
-	@ApiResponse(responseCode = "200", description = "Return paginated dish info and pagination details")
-	@Operation(summary = "Retrieve dish info with pagination")
+	@Operation(summary = "List dishes with pagination")
+	@ApiResponse(responseCode = "200")
 	@io.swagger.v3.oas.annotations.parameters.RequestBody(
 		  description = "Required fields: pageNo, pageSize. Optional filters: name (partial match), status, classificationId, mealId."
 	)
 	@PostMapping("/list")
-	public ResponseEntity<PageInfo<Dish>> list(@NotNull @NotBlank @RequestBody DishListDto dishListDto) {
+	public ResponseEntity<PageInfo<Dish>> listWithPaginationAndFilters(@RequestBody DishListDto dishListDto) {
 		return ResponseEntity.ok(dishService.list(dishListDto));
 	}
 
@@ -73,8 +74,8 @@ public class DishController {
 	@PostMapping("/add")
 	public ResponseEntity<?> add(@io.swagger.v3.oas.annotations.parameters.RequestBody(
 		  description = "Dish details. Required fields: name, price, status")
-	                                   @RequestBody DishDto dishDto) {
-		dishService.add(dishDto);
+	                                   @RequestBody DishAddDto dto) {
+		dishService.add(dto);
 		return ResponseEntity.ok().build();
 	}
 }
