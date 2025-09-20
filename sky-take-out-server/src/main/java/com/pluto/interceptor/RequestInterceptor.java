@@ -11,17 +11,12 @@ public class RequestInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		Integer requestUserId = null;
 		try {
-			requestUserId = Integer.valueOf(request.getHeader("request-user-id"));
+			requestUserId = Integer.valueOf(request.getHeader("X-Request-ID"));
 		} catch (NumberFormatException e) {
 			// Continue execution without setting requestUserId
 			return true;
 		}
 		RequestContext.setRequestUserId(requestUserId);
 		return true;
-	}
-
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-		RequestContext.clear();
 	}
 }

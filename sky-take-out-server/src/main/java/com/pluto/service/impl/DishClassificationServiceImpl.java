@@ -6,6 +6,7 @@ import com.pluto.context.RequestContext;
 import com.pluto.exception.DishClassificationNotFoundException;
 import com.pluto.mapper.DishClassificationDishMapper;
 import com.pluto.mapper.DishClassificationMapper;
+import com.pluto.mapper.DishMapper;
 import com.pluto.model.DishClassification;
 import com.pluto.model.dto.DishClassificationAddDto;
 import com.pluto.model.dto.DishClassificationListDto;
@@ -21,6 +22,8 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class DishClassificationServiceImpl implements DishClassificationService {
+	@Resource
+	private DishMapper dishMapper;
 	@Resource
 	private DishClassificationMapper dishClassificationMapper;
 	@Resource
@@ -83,5 +86,14 @@ public class DishClassificationServiceImpl implements DishClassificationService 
 			throw new DishClassificationNotFoundException(
 				  "Dish classification with ID " + id + " not found.");
 		}
+	}
+
+	@Transactional
+	@Override
+	public void addDishes(DishClassificationAddDto dto) {
+		Integer id = dto.getId();
+		List<Integer> dishIds = dto.getDishIds();
+		dishClassificationDishMapper.addDishesToClassification(id, dishIds);
+		dishIds.forEach(dishId -> dishMapper.updateClassificationIdById(dishId, id));
 	}
 }

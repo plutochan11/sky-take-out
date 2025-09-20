@@ -11,34 +11,38 @@
                   <if test="image != null">image,</if>
                   <if test="description != null">description,</if>
                   <if test="classificationId != null">classification_id</if>
-                  <if test="mealId != null">meal_id,</if>
             </trim>
             <trim prefix="values (" suffix=")" suffixOverrides=",">
                   #{name}, #{price}, #{status},
                   <if test="image != null">#{image},</if>
                   <if test="description != null">#{description},</if>
                   <if test="classificationId != null">#{classification_id}</if>
-                  <if test="mealId != null">#{mealId},</if>
             </trim>
       </insert>
 
-      <select id="findByConditions" resultType="com.pluto.model.Dish">
-            select id, name, price, status, image, description, classification_id,
-                  meal_id, created_at, updated_at
-            from dish
+      <select id="findDetailsWithFilters" resultType="com.pluto.model.dto.DishDetailDto">
+            select d.id, d.name, d.price, d.status, d.image, dc.name classification_name
+            from dish d
+            left join dish_classification dc on d.classification_id = dc.id
             <where>
                   <if test="name != null">
-                        and name like concat('%', #{name}, '%')
+                        and d.name like concat('%', #{name}, '%')
                   </if>
                   <if test="status != null">
-                        and status = #{status}
+                        and d.status = #{status}
                   </if>
                   <if test="classificationId != null">
-                        and classification_id = #{classificationId}
-                  </if>
-                  <if test="mealId != null">
-                        and meal_id = #{mealId}
+                        and d.classification_id = #{classificationId}
                   </if>
             </where>
+      </select>
+
+      <select id="findDetailById" resultType="com.pluto.model.dto.DishDetailDto">
+            select d.id, d.name, d.price, d.status, d.image, d.description, dc.name classification_name,
+            m.name meal_name
+            from dish d
+            left join dish_classification dc on d.classification_id = dc.id
+            left join meal m on d.meal_id = m.id
+            where d.id = #{id}
       </select>
 </mapper>

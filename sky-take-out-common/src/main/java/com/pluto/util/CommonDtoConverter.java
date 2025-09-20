@@ -1,14 +1,15 @@
 package com.pluto.util;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-// TODO Check out whether it's possible to be registered when there's a class named "xxxDto" as @ConditionalOnClass
 @Component
 public class CommonDtoConverter implements DtoConverter{
+	public CommonDtoConverter() {}
 
 	@Override
 	public <D, E> E dtoToEntity(D dto, Class<E> entityClass) throws NoSuchMethodException {
@@ -18,7 +19,7 @@ public class CommonDtoConverter implements DtoConverter{
 
 		try {
 			// Retrieve the no-argument constructor and initialise the entity object
-			E entity = entityClass.getDeclaredConstructor().newInstance();
+			E entity = entityClass.getConstructor().newInstance();
 
 			dtoFields.forEach(field -> {
 				field.setAccessible(true);

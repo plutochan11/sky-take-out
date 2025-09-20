@@ -1,12 +1,11 @@
 package com.pluto.model.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class DishAddDto {
 	private String name;
@@ -15,5 +14,4 @@ public class DishAddDto {
 	private String description;
 	private Short status;
 	private Integer classificationId;
-	private Integer mealId;
 }

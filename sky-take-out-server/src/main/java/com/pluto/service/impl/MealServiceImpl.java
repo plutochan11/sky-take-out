@@ -7,6 +7,7 @@ import com.pluto.exception.MealNotFoundException;
 import com.pluto.mapper.MealDishMapper;
 import com.pluto.mapper.MealMapper;
 import com.pluto.model.Meal;
+import com.pluto.model.MealDish;
 import com.pluto.model.dto.MealAddDto;
 import com.pluto.model.dto.MealListDto;
 import com.pluto.service.MealService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,7 +32,17 @@ public class MealServiceImpl implements MealService {
 	public void add(MealAddDto mealAddDto) {
 		mealMapper.add(mealAddDto);
 		Integer mealId = mealAddDto.getId();
-		mealAddDto.getDishes().forEach((dishId, quantity) -> mealDishMapper.add(mealId, dishId, quantity));
+
+		List<MealDish> mealDishes = new ArrayList<>();
+		mealAddDto.getDishIdsAndQuantities().forEach((dishId, quantity) -> {
+			MealDish mealDish = MealDish.builder()
+				  .mealId(mealId)
+				  .dishId(dishId)
+				  .quantity(quantity)
+				  .build();
+			mealDishes.add(mealDish);
+		});
+		mealDishMapper.addBatch(mealDishes);
 	}
 
 	@Override

@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper
 public interface AdminMapper {
@@ -23,19 +22,19 @@ public interface AdminMapper {
 	from admin
 	where username = #{username}
 """)
-	Admin findOneByUsername(String username);
+	Admin findByUsername(String username);
 
 	/**
-	 * Check if an admin with the given username exists
-	 * @param username The admin username
-	 * @return 1 if exists, 0 otherwise
+	 * Count the number of admins given the username
+	 * @param username The username
+	 * @return The number of admins (0 or 1)
 	 */
 	@Select("""
 	  select count(0)
 	  from admin
 	  where username = #{username}
 """)
-	int existsByUsername(String username);
+	int countByUsername(String username);
 
 	/**
 	 * Check if an admin with the given username and password exists

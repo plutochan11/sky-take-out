@@ -13,5 +13,4 @@ public class DishDto {
 	private String description;
 	private Short status;
 	private Integer classificationId;
-	private Integer mealId;
 }

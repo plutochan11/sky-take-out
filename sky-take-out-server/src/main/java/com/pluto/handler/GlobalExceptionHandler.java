@@ -1,6 +1,7 @@
 package com.pluto.handler;
 
 import com.pluto.exception.CustomException;
+import com.pluto.exception.IncorrectPasswordException;
 import com.pluto.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<String> handleCustomException(CustomException e) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			  .body(e.getMessage());
+	}
+
+	@ExceptionHandler(IncorrectPasswordException.class)
+	public ResponseEntity<String> handleIncorrectPasswordException(IncorrectPasswordException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 			  .body(e.getMessage());
 	}
 

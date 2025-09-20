@@ -1,7 +1,10 @@
 package com.pluto.mapper;
 
+import com.pluto.model.dto.DishAddDto;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 @Mapper
 public interface DishClassificationDishMapper {
@@ -10,4 +13,10 @@ public interface DishClassificationDishMapper {
 	values (#{dishClassificationId}, #{dishId})
 """)
 	void add(Integer dishClassificationId, Integer dishId);
+
+	/**
+	 * Add new dishes to an existing classification
+	 * @param classificationId, dishIds
+	 */
+	void addDishesToClassification(Integer classificationId, List<Integer> dishIds);
 }

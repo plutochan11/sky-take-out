@@ -1,8 +1,7 @@
 package com.pluto.mapper;
 
-import com.pluto.model.Admin;
 import com.pluto.model.Dish;
-import com.pluto.model.dto.DishDto;
+import com.pluto.model.dto.DishDetailDto;
 import com.pluto.model.dto.DishListDto;
 import org.apache.ibatis.annotations.*;
 
@@ -10,6 +9,13 @@ import java.util.List;
 
 @Mapper
 public interface DishMapper {
+	@Update("""
+	update dish
+	set classification_id = #{dishClassificationId}
+	where id = #{id}
+""")
+	void updateClassificationIdById(Integer id, Integer dishClassificationId);
+
 	void add(Dish dish);
 
 	@Select("""
@@ -20,7 +26,9 @@ public interface DishMapper {
 """)
 	Dish findById(Integer id);
 
-	List<Dish> findByConditions(DishListDto dishListDto);
+	DishDetailDto findDetailById(Integer id);
+
+	List<DishDetailDto> findDetailsWithFilters(DishListDto dishListDto);
 
 	@Update("""
 	update dish

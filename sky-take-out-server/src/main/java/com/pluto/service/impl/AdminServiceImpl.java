@@ -10,6 +10,7 @@ import com.pluto.mapper.AdminMapper;
 import com.pluto.model.Admin;
 import com.pluto.model.dto.AdminAddDto;
 import com.pluto.model.dto.AdminListDto;
+import com.pluto.model.dto.AdminLoginDto;
 import com.pluto.service.AdminService;
 import com.pluto.util.JwtUtil;
 import com.pluto.util.PasswordHasher;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -27,43 +30,8 @@ public class AdminServiceImpl implements AdminService {
 	private PasswordHasher passwordHasher;
 
 	@Override
-	public void verifyUsername(String username) {
-		int count = adminMapper.existsByUsername(username);
-		if (count == 1) {
-			return;
-		} else {
-			throw new AccountNotFoundExecption(ErrorMessage.USER_NOT_FOUND.getMessage());
-		}
-	}
-
-	@Override
-	public void verifyPassword(String username, String password) {
-		String truePassword = adminMapper.findOneByUsername(username).getPassword();
-		if (passwordHasher.verify(password, truePassword)) {
-			return;
-		} else {
-			throw new IncorrectPasswordException(ErrorMessage.INCORRECT_PASSWORD.getMessage());
-		}
-	}
-
-	@Override
-	public String generateJwt(String username) {
-		Admin admin = adminMapper.findOneByUsername(username);
-		if (admin != null) { // Proceed only if the admin is found
-			Map<String, String> claims = Map.of(
-				  "admin id", String.valueOf(admin.getId()),
-				  "username", admin.getUsername(),
-				  "name", admin.getName()
-			);
-			return JwtUtil.generate(claims);
-		} else {
-			throw new AccountNotFoundExecption(ErrorMessage.USER_NOT_FOUND.getMessage());
-		}
-	}
-
-	@Override
 	public void checkUsername(String username) throws DuplicateUsernameException {
-		int count = adminMapper.existsByUsername(username);
+		int count = adminMapper.countByUsername(username);
 		if (count == 0) {
 			return;
 		} else {
@@ -109,7 +77,7 @@ public class AdminServiceImpl implements AdminService {
 			throw new AccountNotFoundExecption(ErrorMessage.USER_NOT_FOUND.getMessage());
 		}
 		// Verify if the new username is taken
-		if (adminMapper.existsByUsername(admin.getUsername()) != 0) {
+		if (adminMapper.countByUsername(admin.getUsername()) != 0) {
 			throw new IllegalArgumentException("Username has been used by another admin");
 		}
 
@@ -117,5 +85,40 @@ public class AdminServiceImpl implements AdminService {
 		String hashedPassword = passwordHasher.hash(admin.getPassword());
 		admin.setPassword(hashedPassword);
 		adminMapper.updateById(admin);
+	}
+
+	@Override
+	public String login(AdminLoginDto dto) {
+		String username = dto.getUsername();
+		String password = dto.getPassword();
+		Optional<Admin> admin = Optional.ofNullable(adminMapper.findByUsername(username));
+		// If user not found given the username
+		if (admin.isEmpty()) {
+			throw new AccountNotFoundExecption(ErrorMessage.USER_NOT_FOUND.getMessage());
+		}
+
+		// if wrong password
+		String truePassword = admin.get().getPassword();
+		if (!passwordHasher.verify(password, truePassword)) {
+			throw new IncorrectPasswordException(ErrorMessage.INCORRECT_PASSWORD.getMessage());
+		}
+
+		Admin realAdmin = admin.get();
+		// Generate a JWT token with admin id, username and the real admin name
+		return generateJwt(realAdmin.getId(), realAdmin.getUsername(), realAdmin.getName());
+	}
+
+	@Override
+	public Admin findByUsername(String username) {
+		return adminMapper.findByUsername(username);
+	}
+
+	private String generateJwt(Integer id, String username, String name) {
+		Map<String, String> claims = Map.of(
+			  "admin id", String.valueOf(id),
+			  "username", username,
+			  "name", name
+		);
+		return JwtUtil.generate(claims);
 	}
 }

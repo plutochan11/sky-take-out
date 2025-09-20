@@ -2,6 +2,7 @@ package com.pluto.controller.dish_classification;
 
 import com.github.pagehelper.PageInfo;
 import com.pluto.model.DishClassification;
+import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishClassificationAddDto;
 import com.pluto.model.dto.DishClassificationListDto;
 import com.pluto.service.DishClassificationService;
@@ -22,37 +23,10 @@ public class DishClassificationController {
 	@Resource
 	private DishClassificationService dishClassificationService;
 
-	@Operation(summary = "Delete a dish classification by ID")
-	@ApiResponses(
-		  {
-			    @ApiResponse(responseCode = "200"),
-			    @ApiResponse(responseCode = "404")
-		  }
-	)
-	@DeleteMapping("/delete")
-	public ResponseEntity<?> delete(@RequestParam Integer id) {
-		dishClassificationService.delete(id);
-		return ResponseEntity.ok().build();
-	}
-
-	@Operation(summary = "Toggle the availability status of a dish classification")
-	@ApiResponses(
-		  {
-			    @ApiResponse(responseCode = "200"),
-			    @ApiResponse(responseCode = "404")
-		  }
-	)
-	@PatchMapping("/status/toggle")
-	public ResponseEntity<?> toggleStatus(@RequestParam Integer id) {
-		dishClassificationService.toggleStatus(id);
-		return ResponseEntity.ok().build();
-	}
-
-	@Operation(summary = "Add a new dish classification")
-	@PostMapping("/add")
-	public ResponseEntity<?> add(@RequestBody DishClassificationAddDto dishClassificationAddDto) {
-		dishClassificationService.add(dishClassificationAddDto);
-		return ResponseEntity.ok().build();
+	@Operation(summary = "List all dish classification")
+	@GetMapping("/list")
+	public ResponseEntity<List<DishClassification>> findAll() {
+		return ResponseEntity.ok(dishClassificationService.findAll());
 	}
 
 	@Operation(summary = "List dish classifications with pagination and optional filters")
@@ -62,9 +36,38 @@ public class DishClassificationController {
 		return ResponseEntity.ok(dishClassificationService.findWithPaginationAndFilter(dishClassificationListDto));
 	}
 
-	@Operation(summary = "List all dish classification")
-	@GetMapping("/list")
-	public ResponseEntity<List<DishClassification>> findAll() {
-		return ResponseEntity.ok(dishClassificationService.findAll());
+	@Operation(summary = "Add a new dish classification")
+	@PostMapping("/add")
+	public ResponseEntity<?> add(@RequestBody DishClassificationAddDto dishClassificationAddDto) {
+		dishClassificationService.add(dishClassificationAddDto);
+		return ResponseEntity.ok().build();
+	}
+
+	@Operation(summary = "Add new dishes to an existing classification")
+	@PutMapping("/add/dishes")
+	public ResponseEntity<?> addDishes(@RequestBody DishClassificationAddDto dto) {
+		dishClassificationService.addDishes(dto);
+		return ResponseEntity.ok().build();
+	}
+
+	@Operation(summary = "Toggle the availability status of a dish classification")
+	@ApiResponses({
+		  @ApiResponse(responseCode = "200"),
+		  @ApiResponse(responseCode = "404")
+	})
+	@PatchMapping("/status/toggle")
+	public ResponseEntity<?> toggleStatus(@RequestParam Integer id) {
+		dishClassificationService.toggleStatus(id);
+		return ResponseEntity.ok().build();
+	}
+
+	@Operation(summary = "Delete a dish classification by ID")
+	@ApiResponses({
+		  @ApiResponse(responseCode = "200"), @ApiResponse(responseCode = "404")
+	})
+	@DeleteMapping("/delete")
+	public ResponseEntity<?> delete(@RequestParam Integer id) {
+		dishClassificationService.delete(id);
+		return ResponseEntity.ok().build();
 	}
 }

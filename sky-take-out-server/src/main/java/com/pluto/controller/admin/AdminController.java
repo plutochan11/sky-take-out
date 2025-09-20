@@ -11,23 +11,38 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Admin", description = "Admin related APIs")
 @Slf4j
 @RestController
 @RequestMapping("/management/admin")
-@Tag(name = "Admin", description = "Admin related APIs")
 public class AdminController {
 	@Resource
 	private AdminService adminService;
 
-	@Operation(summary = "Update the admin info")
-	@PutMapping("/update")
-	public ResponseEntity<?> update(@RequestBody Admin admin) {
-		adminService.update(admin);
-		return ResponseEntity.ok().build();
+	@Operation(summary = "Login")
+	@ApiResponses(value = {
+		  @ApiResponse(responseCode = "200", description = "Login successful, return a JWT token in the body and admin ID in the X-Request-ID header"),
+		  @ApiResponse(responseCode = "401", description = "Incorrect password"),
+		  @ApiResponse(responseCode = "404", description = "Admin not found")
+	})
+	@PostMapping("/login")
+	public ResponseEntity<String> login(@RequestBody AdminLoginDto dto, HttpServletResponse response) {
+		String jwt = adminService.login(dto);
+		Integer adminId = adminService.findByUsername(dto.getUsername()).getId();
+		response.setHeader("X-Request-ID", adminId.toString());
+		return ResponseEntity.ok(jwt);
+	}
+
+	@Operation(summary = "List admins with pagination and filters")
+	@ApiResponse(responseCode = "200")
+	@PostMapping("/list")
+	public ResponseEntity<PageInfo<Admin>> list(@RequestBody AdminListDto adminListDto) {
+		return ResponseEntity.ok(adminService.list(adminListDto));
 	}
 
 	@Operation(summary = "Find the admin info by id")
@@ -48,28 +63,10 @@ public class AdminController {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Login")
-	@PostMapping("/login")
-	@ApiResponses(value = {
-		  @ApiResponse(responseCode = "200", description = "Login successful, return a JWT token"),
-		  @ApiResponse(responseCode = "404", description = "Admin account not found or incorrect password")
-	})
-	public ResponseEntity<String> login(@RequestBody AdminLoginDto adminLoginDto) {
-		// Verify admin by username and password
-		adminService.verifyUsername(adminLoginDto.getUsername());
-		adminService.verifyPassword(adminLoginDto.getUsername(), adminLoginDto.getPassword());
-
-		// TODO Consider leveraging Spring Security for authentication and authorization
-		// Generate a JWT token with admin id, username and the real admin name
-		String jwt = adminService.generateJwt(adminLoginDto.getUsername());
-		log.info("Admin(username: {}) logged in", adminLoginDto.getUsername());
-		return ResponseEntity.ok(jwt);
-	}
-
-	@ApiResponse(responseCode = "200")
-	@Operation(summary = "List admins with pagination and filters")
-	@PostMapping("/list")
-	public ResponseEntity<PageInfo<Admin>> list(@RequestBody AdminListDto adminListDto) {
-		return ResponseEntity.ok(adminService.list(adminListDto));
+	@Operation(summary = "Update the admin info")
+	@PutMapping("/update")
+	public ResponseEntity<?> update(@RequestBody Admin admin) {
+		adminService.update(admin);
+		return ResponseEntity.ok().build();
 	}
 }

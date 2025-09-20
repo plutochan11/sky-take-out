@@ -38,4 +38,10 @@ public interface DishClassificationService {
 	 * @param id
 	 */
 	void delete(Integer id);
+
+	/**
+	 * Add new dishes to an existing classification
+	 * @param dto DishAddDto
+	 */
+	void addDishes(DishClassificationAddDto dto);
 }

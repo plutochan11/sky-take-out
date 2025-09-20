@@ -7,31 +7,10 @@ import com.pluto.exception.IncorrectPasswordException;
 import com.pluto.model.Admin;
 import com.pluto.model.dto.AdminAddDto;
 import com.pluto.model.dto.AdminListDto;
+import com.pluto.model.dto.AdminLoginDto;
+import jakarta.servlet.http.HttpSession;
 
 public interface AdminService {
-
-	/**
-	 * Check if an admin with the given username exists
-	 * @param username The admin username
-	 * @throws AccountNotFoundExecption An AccountNotFoundException if the admin does not exist
-	 */
-	void verifyUsername(String username) throws AccountNotFoundExecption;
-
-	/**
-	 * Check if an admin with the given username and password exists
-	 * @param username The admin username
-	 * @param password The admin password
-	 * @throws IncorrectPasswordException An IncorrectPasswordException if the password is incorrect
-	 */
-	void verifyPassword(String username, String password) throws IncorrectPasswordException;
-
-	/**
-	 * Generate a JWT token with admin id, username and the real admin name
-	 * @param username the admin username
-	 * @return the JWT token
-	 */
-	String generateJwt(String username);
-
 	/**
 	 * Check if there's already an admin with the same username
 	 * @param username The admin username
@@ -67,4 +46,18 @@ public interface AdminService {
 	 * Note: username cannot be updated
 	 */
 	void update(Admin admin);
+
+	/**
+	 * Login
+	 * @param dto The {@link AdminLoginDto} containing username and password
+	 * @return A JWT token from the admin id, username and the name if the login is successful
+	 */
+	String login(AdminLoginDto dto);
+
+	/**
+	 * Find an admin by username
+	 * @param username The admin username
+	 * @return The {@link Admin} if found
+	 */
+	Admin findByUsername(String username);
 }

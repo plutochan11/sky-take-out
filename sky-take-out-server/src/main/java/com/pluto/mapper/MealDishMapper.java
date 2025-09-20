@@ -1,7 +1,10 @@
 package com.pluto.mapper;
 
+import com.pluto.model.MealDish;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 @Mapper
 public interface MealDishMapper {
@@ -10,4 +13,6 @@ public interface MealDishMapper {
 	    values(#{mealId}, #{dishId}, #{quantity})
 """)
 	void add(Integer mealId, Integer dishId, Integer quantity);
+
+	void addBatch(List<MealDish> mealDishes);
 }

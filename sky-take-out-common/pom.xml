@@ -19,6 +19,10 @@
 
       <dependencies>
             <dependency>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-starter-aop</artifactId>
+            </dependency>
+            <dependency>
                   <groupId>com.pluto</groupId>
                   <artifactId>sky-take-out-model</artifactId>
                   <version>1.0-SNAPSHOT</version>
@@ -47,6 +51,10 @@
             </dependency>
 <!--             Aliyun OSS related dependencies           -->
 
+            <dependency>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-starter-test</artifactId>
+            </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop -->
             <dependency>
                   <groupId>org.springframework.boot</groupId>

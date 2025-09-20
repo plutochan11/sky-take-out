@@ -9,7 +9,6 @@ public class DishListDto {
 	private String name;
 	private Integer status;
 	private Integer classificationId;
-	private Integer mealId;
 	private Integer pageNo = 1;
 	private Integer pageSize = 10;
 }
