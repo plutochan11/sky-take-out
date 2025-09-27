@@ -20,7 +20,7 @@ public interface DishMapper {
 
 	@Select("""
 	select id, name, price, image, description, status, classification_id, 
-	       meal_id, created_at, updated_at
+	      created_at, updated_at
 	from dish
 	where id = #{id}
 """)
@@ -48,5 +48,7 @@ public interface DishMapper {
 	delete from dish
 	where id = #{id}
 """)
-	void delete(Integer id);
+	Integer deleteById(Integer id);
+
+	Integer deleteByIds(List<Integer> ids);
 }

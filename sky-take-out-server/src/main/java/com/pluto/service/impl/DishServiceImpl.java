@@ -2,8 +2,12 @@ package com.pluto.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pluto.enums.ErrorMessage;
+import com.pluto.enums.Status;
+import com.pluto.exception.DeletionForbiddenException;
 import com.pluto.exception.DishNotFoundException;
 import com.pluto.mapper.DishMapper;
+import com.pluto.mapper.MealDishMapper;
 import com.pluto.model.Dish;
 import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishDetailDto;
@@ -12,7 +16,10 @@ import com.pluto.service.DishService;
 import com.pluto.util.DtoConverter;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -23,6 +30,8 @@ public class DishServiceImpl implements DishService {
 	private AliyunOssFileUploadService fileUploadService;
 	@Resource
 	private DtoConverter dtoConverter;
+	@Resource
+	private MealDishMapper mealDishMapper;
 
 	@Override
 	public void add(DishAddDto dto) throws NoSuchMethodException {
@@ -62,12 +71,47 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public void delete(Integer id) {
-		// Verify if the dish exists
-		if (dishMapper.existsById(id) == 1) {
-			dishMapper.delete(id);
-		} else {
+	public void deleteById(Integer id) {
+		// Verify if the dish exists by checking the affected rows. It should be exactly 1.
+		if (!Objects.equals(dishMapper.deleteById(id), 1)) {
 			throw new DishNotFoundException("Dish with ID " + id + " not found.");
 		}
+	}
+
+	@Transactional
+	@Override
+	public void deleteByIds(List<Integer> ids) {
+		List<Dish> dishesInMeals = new ArrayList<>();
+		List<Dish> dishesOnSale = new ArrayList<>();
+
+		ids.forEach(id -> {
+			// Verify if a dish is on sale
+			Dish dish = dishMapper.findById(id);
+			if (dish != null && dish.getStatus() == Status.ON_SALE.getValue()) {
+				// Collect the dishes that are on sale
+				dishesOnSale.add(dish);
+				return;
+			} else if (dish == null) {
+				throw new DishNotFoundException("Dish with ID " + id + " not found.");
+			}
+
+			// Verify if a dish belongs to a meal
+			if (mealDishMapper.existsByDishId(id) > 0) {
+				// Collect the dishes that belong to meals
+				dishesInMeals.add(dish);
+			}
+		});
+
+		if (!dishesOnSale.isEmpty()) {
+			throw new DeletionForbiddenException(ErrorMessage.DISH_ON_SALE.getMessage() +
+				  "\n" + String.join("\n", dishesOnSale.stream().map(Dish::getName).toList()));
+		}
+
+		if (!dishesInMeals.isEmpty()) {
+			throw new DeletionForbiddenException(ErrorMessage.DISH_IN_A_MEAL.getMessage() +
+				  "\n" + String.join("\n", dishesInMeals.stream().map(Dish::getName).toList()));
+		}
+
+		dishMapper.deleteByIds(ids);
 	}
 }

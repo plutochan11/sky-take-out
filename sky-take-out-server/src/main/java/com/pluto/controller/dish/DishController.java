@@ -1,7 +1,6 @@
 package com.pluto.controller.dish;
 
 import com.github.pagehelper.PageInfo;
-import com.pluto.model.Dish;
 import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishDetailDto;
 import com.pluto.model.dto.DishListDto;
@@ -17,6 +16,8 @@ import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/management/dish")
@@ -67,10 +68,17 @@ public class DishController {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Delete a dish by id")
+	@Operation(summary = "Delete a dish by IDs")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id) {
-		dishService.delete(id);
+		dishService.deleteById(id);
+		return ResponseEntity.ok().build();
+	}
+
+	@Operation(summary = "Delete dishes by IDs")
+	@DeleteMapping()
+	public ResponseEntity<?> deleteByIds(@RequestParam List<Integer> ids) {
+		dishService.deleteByIds(ids);
 		return ResponseEntity.ok().build();
 	}
 }

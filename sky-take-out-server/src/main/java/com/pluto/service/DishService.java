@@ -5,6 +5,8 @@ import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishDetailDto;
 import com.pluto.model.dto.DishListDto;
 
+import java.util.List;
+
 public interface DishService {
 	/**
 	 * Add a new dish
@@ -37,5 +39,11 @@ public interface DishService {
 	 * Delete a dish by its ID
 	 * @param id The dish id
 	 */
-	void delete(Integer id);
+	void deleteById(Integer id);
+
+	/**
+	 * Batch delete dishes by their IDs
+	 * @param ids The list of dish ids to be deleted
+	 */
+	void deleteByIds(List<Integer> ids);
 }
