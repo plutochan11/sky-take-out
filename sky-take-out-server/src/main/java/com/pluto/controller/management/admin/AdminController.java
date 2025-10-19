@@ -1,4 +1,4 @@
-package com.pluto.controller.admin;
+package com.pluto.controller.management.admin;
 
 import com.github.pagehelper.PageInfo;
 import com.pluto.model.Admin;

@@ -1,4 +1,4 @@
-package com.pluto.controller.meal;
+package com.pluto.controller.management.meal;
 
 import com.github.pagehelper.PageInfo;
 import com.pluto.model.Meal;

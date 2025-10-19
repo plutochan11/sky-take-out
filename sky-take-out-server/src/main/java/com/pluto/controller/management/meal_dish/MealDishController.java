@@ -1,4 +1,4 @@
-package com.pluto.controller.meal_dish;
+package com.pluto.controller.management.meal_dish;
 
 import com.pluto.model.dto.MealDishAddDto;
 import com.pluto.service.MealDishService;

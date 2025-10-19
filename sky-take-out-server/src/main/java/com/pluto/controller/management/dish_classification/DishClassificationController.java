@@ -1,4 +1,4 @@
-package com.pluto.controller.dish_classification;
+package com.pluto.controller.management.dish_classification;
 
 import com.github.pagehelper.PageInfo;
 import com.pluto.model.DishClassification;

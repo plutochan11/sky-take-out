@@ -1,6 +1,7 @@
 package com.pluto.service;
 
 import com.github.pagehelper.PageInfo;
+import com.pluto.model.Dish;
 import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishDetailDto;
 import com.pluto.model.dto.DishListDto;
@@ -31,9 +32,9 @@ public interface DishService {
 
 	/**
 	 * Toggle the status of a dish (e.g., available/unavailable)
-	 * @param id The dish id
+	 * @param ids The dish IDs
 	 */
-	void toggleStatus(Integer id);
+	void toggleStatus(List<Integer> ids);
 
 	/**
 	 * Delete a dish by its ID
@@ -46,4 +47,10 @@ public interface DishService {
 	 * @param ids The list of dish ids to be deleted
 	 */
 	void deleteByIds(List<Integer> ids);
+
+	/**
+	 * Update dish information
+	 * @param dish The dish object containing updated info
+	 */
+	void update(Dish dish);
 }

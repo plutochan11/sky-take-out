@@ -1,6 +1,7 @@
-package com.pluto.controller.dish;
+package com.pluto.controller.management.dish;
 
 import com.github.pagehelper.PageInfo;
+import com.pluto.model.Dish;
 import com.pluto.model.dto.DishAddDto;
 import com.pluto.model.dto.DishDetailDto;
 import com.pluto.model.dto.DishListDto;
@@ -25,7 +26,7 @@ import java.util.List;
 public class DishController {
 	@Resource private DishService dishService;
 
-	@Operation(summary = "List dishes with pagination and filters")
+	@Operation(summary = "List dishes with pagination and conditions")
 	@ApiResponse(responseCode = "200")
 	@PostMapping("/list")
 	public ResponseEntity<PageInfo<DishDetailDto>> listWithPaginationAndFilters(
@@ -33,7 +34,7 @@ public class DishController {
 		return ResponseEntity.ok(dishService.listWithPaginationAndFilters(dishListDto));
 	}
 
-	@Operation(summary = "Find dish detail by ID")
+	@Operation(summary = "Find dish details by ID")
 	@ApiResponses({
 		  @ApiResponse(responseCode = "200"), @ApiResponse(responseCode = "404")
 	})
@@ -61,10 +62,17 @@ public class DishController {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Toggle dish status (e.g., available/unavailable) by id")
+	@Operation(summary = "Update a dish")
+	@PatchMapping
+	public ResponseEntity<?> update(@RequestBody Dish dish) {
+		dishService.update(dish);
+		return ResponseEntity.ok().build();
+	}
+
+	@Operation(summary = "Toggle dish status (e.g., available/unavailable) by IDs")
 	@PatchMapping("/status")
-	public ResponseEntity<?> toggleStatus(@RequestParam Integer id) {
-		dishService.toggleStatus(id);
+	public ResponseEntity<?> toggleStatus(@RequestParam List<Integer> ids) {
+		dishService.toggleStatus(ids);
 		return ResponseEntity.ok().build();
 	}
 

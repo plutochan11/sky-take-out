@@ -60,14 +60,28 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public void toggleStatus(Integer id) {
-		Dish dish = dishMapper.findById(id);
-		if (dish == null) {
-			throw new DishNotFoundException("Dish with ID " + id + " not found.");
+	public void toggleStatus(List<Integer> ids) {
+		List<Dish> dishes = new ArrayList<>();
+		List<Integer> missingIds = new ArrayList<>();
+
+		for (Integer id : ids) {
+			Dish dish = dishMapper.findById(id);
+			if (dish == null) {
+				missingIds.add(id);
+			} else {
+				dishes.add(dish);
+			}
 		}
-		Short newStatus = (short) ((dish.getStatus() == 1) ? 0 : 1);
-		dish.setStatus(newStatus);
-		dishMapper.updateStatus(dish);
+
+		if (!missingIds.isEmpty()) {
+			throw new DishNotFoundException("Dish with ID(s) " + missingIds + " not found.");
+		}
+
+		for (Dish dish : dishes) {
+			Short newStatus = (short) ((dish.getStatus() == 1) ? 0 : 1);
+			dish.setStatus(newStatus);
+			dishMapper.updateStatus(dish);
+		}
 	}
 
 	@Override
@@ -113,5 +127,14 @@ public class DishServiceImpl implements DishService {
 		}
 
 		dishMapper.deleteByIds(ids);
+	}
+
+	@Override
+	public void update(Dish dish) {
+		Dish existing = dishMapper.findById(dish.getId());
+		if (existing == null) {
+			throw new DishNotFoundException("Dish with ID " + dish.getId() + " not found.");
+		}
+		dishMapper.update(dish);
 	}
 }
