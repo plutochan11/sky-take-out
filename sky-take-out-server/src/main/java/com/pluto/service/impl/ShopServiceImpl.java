@@ -12,12 +12,12 @@ public class ShopServiceImpl implements ShopService {
 	private RedisTemplate<String, Object> redisTemplate;
 
 	@Override
-	public void switchStatus(Short status) {
-		redisTemplate.opsForValue().set(KEY, status);
+	public void switchStatus(Integer status) {
+		redisTemplate.opsForValue().set(SHOP_STATUS_KEY, status);
 	}
 
 	@Override
-	public Short getStatus() {
-		return (Short) redisTemplate.opsForValue().get(KEY);
+	public Integer getStatus() {
+		return (Integer) redisTemplate.opsForValue().get(SHOP_STATUS_KEY);
 	}
 }

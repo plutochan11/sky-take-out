@@ -1,6 +1,7 @@
 package com.pluto.service;
 
 import com.github.pagehelper.PageInfo;
+import com.pluto.model.Dish;
 import com.pluto.model.DishClassification;
 import com.pluto.model.dto.DishClassificationAddDto;
 import com.pluto.model.dto.DishClassificationListDto;
@@ -44,4 +45,11 @@ public interface DishClassificationService {
 	 * @param dto DishAddDto
 	 */
 	void addDishes(DishClassificationAddDto dto);
+
+	/**
+	 * Get dishes under a specific classification
+	 * @param id The classification ID
+	 * @return Dishes under the classification
+	 */
+	List<Dish> getDishes(Integer id);
 }

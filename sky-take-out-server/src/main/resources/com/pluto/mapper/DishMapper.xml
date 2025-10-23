@@ -67,4 +67,14 @@
             left join meal m on d.meal_id = m.id
             where d.id = #{id}
       </select>
+
+      <select id="getBatch" resultType="com.pluto.model.Dish">
+            select id, name, price, image, description, status, classification_id,
+            created_at, updated_at
+            from dish
+            where id in
+            <foreach collection="ids" item="id" open="(" close=")" separator=", ">
+                  #{id}
+            </foreach>
+      </select>
 </mapper>

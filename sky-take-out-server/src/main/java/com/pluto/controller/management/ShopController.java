@@ -1,4 +1,4 @@
-package com.pluto.controller.management.shop;
+package com.pluto.controller.management;
 
 import com.pluto.service.ShopService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,17 +14,20 @@ public class ShopController {
 	@Resource
 	private ShopService shopService;
 
-	@Operation(summary = "Switch shop status", description = "Switch the shop status between open (1) and closed (0)")
-	@PutMapping("/status/{status}")
-	public ResponseEntity<?> switchStatus(@PathVariable Short status) {
-		shopService.switchStatus(status);
-		return ResponseEntity.ok().build();
-	}
-
 	@Operation(summary = "Get shop status", description = "Retrieve the current shop status where 1 stands for open and 0 stands for closed")
 	@GetMapping("/status")
-	public ResponseEntity<Short> getStatus() {
-		Short status = shopService.getStatus();
+	public ResponseEntity<Integer> getStatus() {
+		Integer status = shopService.getStatus();
 		return ResponseEntity.ok(status);
+	}
+
+	@Operation(summary = "Update shop status", description = "Update the shop status between open (1) and closed (0)")
+	@PutMapping("/status/{status}")
+	public ResponseEntity<?> updateStatus(@PathVariable Integer status) {
+		if (status == null || (status != 0 && status != 1)) {
+			return ResponseEntity.badRequest().body("Invalid status value. Must be 0 or 1.");
+		}
+		shopService.switchStatus(status);
+		return ResponseEntity.ok().build();
 	}
 }

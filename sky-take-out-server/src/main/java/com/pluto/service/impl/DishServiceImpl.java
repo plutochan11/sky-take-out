@@ -2,6 +2,7 @@ package com.pluto.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pluto.enums.CacheKey;
 import com.pluto.enums.ErrorMessage;
 import com.pluto.enums.Status;
 import com.pluto.exception.DeletionForbiddenException;
@@ -15,12 +16,14 @@ import com.pluto.model.dto.DishListDto;
 import com.pluto.service.DishService;
 import com.pluto.util.DtoConverter;
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class DishServiceImpl implements DishService {
@@ -32,14 +35,18 @@ public class DishServiceImpl implements DishService {
 	private DtoConverter dtoConverter;
 	@Resource
 	private MealDishMapper mealDishMapper;
+	@Resource
+	private RedisTemplate<String, Object> redisTemplate;
 
 	@Override
 	public void add(DishAddDto dto) throws NoSuchMethodException {
+		// Upload image to OSS and get the URL
 		String imageUrl = fileUploadService.upload(dto.getImage());
 		dto.setImage(null); // Clear the MultipartFile to avoid serialization issues
+
+		// Convert DTO to Entity and save to DB
 		Dish dish = dtoConverter.dtoToEntity(dto, Dish.class);
 		dish.setImage(imageUrl);
-		// Check if the dish name already exists
 		dishMapper.add(dish);
 	}
 
@@ -84,17 +91,17 @@ public class DishServiceImpl implements DishService {
 		}
 	}
 
-	@Override
-	public void deleteById(Integer id) {
-		// Verify if the dish exists by checking the affected rows. It should be exactly 1.
-		if (!Objects.equals(dishMapper.deleteById(id), 1)) {
-			throw new DishNotFoundException("Dish with ID " + id + " not found.");
-		}
-	}
+//	@Override
+//	public void deleteById(Integer id) {
+//		// Verify if the dish exists by checking the affected rows. It should be exactly 1.
+//		if (!Objects.equals(dishMapper.deleteById(id), 1)) {
+//			throw new DishNotFoundException("Dish with ID " + id + " not found.");
+//		}
+//	}
 
 	@Transactional
 	@Override
-	public void deleteByIds(List<Integer> ids) {
+	public void deleteById(List<Integer> ids) {
 		List<Dish> dishesInMeals = new ArrayList<>();
 		List<Dish> dishesOnSale = new ArrayList<>();
 
@@ -127,6 +134,10 @@ public class DishServiceImpl implements DishService {
 		}
 
 		dishMapper.deleteByIds(ids);
+
+		// Invalidate all cache of dishes in dish classifications (for simplicity)
+		String pattern = CacheKey.DISHES_DISH_CLASSIFICATION.key("*");
+		clearCache(pattern);
 	}
 
 	@Override
@@ -136,5 +147,16 @@ public class DishServiceImpl implements DishService {
 			throw new DishNotFoundException("Dish with ID " + dish.getId() + " not found.");
 		}
 		dishMapper.update(dish);
+
+		// Invalidate all cache of dishes in dish classifications (for simplicity)
+		String pattern = CacheKey.DISHES_DISH_CLASSIFICATION.key("*");
+		clearCache(pattern);
+	}
+
+	// Clear cache related to the provided cache key prefix
+	private void clearCache(String pattern) {
+		Set<String> keys = redisTemplate.keys(pattern);
+
+		redisTemplate.delete(keys);
 	}
 }

@@ -20,15 +20,15 @@ public class RedisConfiguration {
 
 		StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-		objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
-		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+//		objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
+//		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
 
 		redisTemplate.setKeySerializer(stringRedisSerializer);
-		redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+//		redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
 		redisTemplate.setHashKeySerializer(stringRedisSerializer);
-		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+//		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 
 		redisTemplate.afterPropertiesSet();
 		return redisTemplate;

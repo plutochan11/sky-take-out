@@ -1,6 +1,7 @@
 package com.pluto.service;
 
 import com.github.pagehelper.PageInfo;
+import com.pluto.model.Dish;
 import com.pluto.model.Meal;
 import com.pluto.model.dto.MealAddDto;
 import com.pluto.model.dto.MealListDto;
@@ -8,15 +9,22 @@ import com.pluto.model.dto.MealListDto;
 import java.util.List;
 
 public interface MealService {
-	void add(MealAddDto mealAddDto);
+	void addMeal(MealAddDto mealAddDto);
 
-	void delete(Integer id);
+	void deleteMeal(Integer id);
 
-	void toggleStatus(Integer id);
+	void updateStatus(Integer id);
 
-	Meal findById(Integer id);
+	Meal getMealsWithPagination(Integer id);
 
-	PageInfo<Meal> findWithFilter(MealListDto mealListDto);
+	PageInfo<Meal> getMealsWithPagination(MealListDto mealListDto);
 
-	List<Meal> findAll();
+	List<Meal> getAllMeal();
+
+	/**
+	 * Get dishes associated with the specified meal
+	 * @param id The meal ID
+	 * @return Dishes associated
+	 */
+	List<Dish> getDishesInMeal(Integer id);
 }

@@ -9,6 +9,18 @@ import java.util.List;
 
 @Mapper
 public interface MealDishMapper {
+	@Select("""
+	select count(0) from meal_dish
+	where dish_id = #{dishId}
+""")
+	int existsByDishId(Integer dishId);
+
+	@Select("""
+		  select dish_id from meal_dish
+		  where meal_id = #{id}
+		  """)
+	List<Integer> getDishIds(Integer id);
+
 	@Insert("""
 	insert into meal_dish(meal_id, dish_id, quantity)
 	    values(#{mealId}, #{dishId}, #{quantity})
@@ -16,10 +28,4 @@ public interface MealDishMapper {
 	void add(Integer mealId, Integer dishId, Integer quantity);
 
 	void addBatch(List<MealDish> mealDishes);
-
-	@Select("""
-	select count(0) from meal_dish
-	where dish_id = #{dishId}
-""")
-	int existsByDishId(Integer dishId);
 }

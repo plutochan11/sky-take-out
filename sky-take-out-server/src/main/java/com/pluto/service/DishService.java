@@ -40,13 +40,13 @@ public interface DishService {
 	 * Delete a dish by its ID
 	 * @param id The dish id
 	 */
-	void deleteById(Integer id);
+//	void deleteById(Integer id);
 
 	/**
 	 * Batch delete dishes by their IDs
 	 * @param ids The list of dish ids to be deleted
 	 */
-	void deleteByIds(List<Integer> ids);
+	void deleteById(List<Integer> ids);
 
 	/**
 	 * Update dish information

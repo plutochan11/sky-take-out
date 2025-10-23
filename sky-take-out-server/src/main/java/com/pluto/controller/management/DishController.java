@@ -1,4 +1,4 @@
-package com.pluto.controller.management.dish;
+package com.pluto.controller.management;
 
 import com.github.pagehelper.PageInfo;
 import com.pluto.model.Dish;
@@ -21,29 +21,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/management/dish")
+@RequestMapping("/management/dishes")
 @Tag(name = "Dish", description = "Dish related APIs")
 public class DishController {
 	@Resource private DishService dishService;
 
-	@Operation(summary = "List dishes with pagination and conditions")
-	@ApiResponse(responseCode = "200")
-	@PostMapping("/list")
-	public ResponseEntity<PageInfo<DishDetailDto>> listWithPaginationAndFilters(
-		  @RequestBody DishListDto dishListDto) {
-		return ResponseEntity.ok(dishService.listWithPaginationAndFilters(dishListDto));
-	}
-
-	@Operation(summary = "Find dish details by ID")
-	@ApiResponses({
-		  @ApiResponse(responseCode = "200"), @ApiResponse(responseCode = "404")
-	})
-	@GetMapping("/{id}")
-	public ResponseEntity<DishDetailDto> findById(@PathVariable Integer id) {
-		return ResponseEntity.ok(dishService.findDetailById(id));
-	}
-
-	@Operation(summary = "Add a new dish")
+	@Operation(summary = "Add a dish")
 	@io.swagger.v3.oas.annotations.parameters.RequestBody(
 		  description = "Dish details. Required fields: name, price, status",
 		  content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -53,13 +36,30 @@ public class DishController {
 	@ApiResponses({
 		  @ApiResponse(responseCode = "200"),
 		  @ApiResponse(responseCode = "409", content = @Content(
-					examples = @ExampleObject(value = "Conflict: Dish name already exists")
-			    ))
+			    examples = @ExampleObject(value = "Conflict: Dish name already exists")
+		  ))
 	})
-	@PostMapping(value = "/add")
+	@PostMapping
 	public ResponseEntity<?> add(@ModelAttribute DishAddDto dto) throws NoSuchMethodException {
 		dishService.add(dto);
 		return ResponseEntity.ok().build();
+	}
+
+	@Operation(summary = "Get dishes with pagination and conditions")
+	@ApiResponse(responseCode = "200")
+	@PostMapping("/list")
+	public ResponseEntity<PageInfo<DishDetailDto>> get(
+		  @RequestBody DishListDto dishListDto) {
+		return ResponseEntity.ok(dishService.listWithPaginationAndFilters(dishListDto));
+	}
+
+	@Operation(summary = "Get a dish by ID")
+	@ApiResponses({
+		  @ApiResponse(responseCode = "200"), @ApiResponse(responseCode = "404")
+	})
+	@GetMapping("/{id}")
+	public ResponseEntity<DishDetailDto> get(@PathVariable Integer id) {
+		return ResponseEntity.ok(dishService.findDetailById(id));
 	}
 
 	@Operation(summary = "Update a dish")
@@ -69,24 +69,24 @@ public class DishController {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Toggle dish status (e.g., available/unavailable) by IDs")
+	@Operation(summary = "Update the dish status (e.g., available/unavailable) by IDs")
 	@PatchMapping("/status")
-	public ResponseEntity<?> toggleStatus(@RequestParam List<Integer> ids) {
+	public ResponseEntity<?> updateStatus(@RequestParam List<Integer> ids) {
 		dishService.toggleStatus(ids);
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "Delete a dish by IDs")
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable Integer id) {
-		dishService.deleteById(id);
-		return ResponseEntity.ok().build();
-	}
+//	@Operation(summary = "Delete a dish by ID")
+//	@DeleteMapping("/{id}")
+//	public ResponseEntity<?> delete(@PathVariable Integer id) {
+//		dishService.deleteById(id);
+//		return ResponseEntity.ok().build();
+//	}
 
 	@Operation(summary = "Delete dishes by IDs")
 	@DeleteMapping()
-	public ResponseEntity<?> deleteByIds(@RequestParam List<Integer> ids) {
-		dishService.deleteByIds(ids);
+	public ResponseEntity<?> delete(@RequestParam List<Integer> ids) {
+		dishService.deleteById(ids);
 		return ResponseEntity.ok().build();
 	}
 }

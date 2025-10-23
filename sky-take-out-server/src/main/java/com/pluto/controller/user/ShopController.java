@@ -16,8 +16,8 @@ public class ShopController {
 
 	@Operation(summary = "Get shop status", description = "Retrieve the current shop status where 1 stands for open and 0 stands for closed")
 	@GetMapping("/status")
-	public ResponseEntity<Short> getStatus() {
-		Short status = shopService.getStatus();
+	public ResponseEntity<Integer> getStatus() {
+		Integer status = shopService.getStatus();
 		return ResponseEntity.ok(status);
 	}
 }

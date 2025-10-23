@@ -1,4 +1,4 @@
-package com.pluto.controller.management.admin;
+package com.pluto.controller.management;
 
 import com.github.pagehelper.PageInfo;
 import com.pluto.model.Admin;
@@ -38,17 +38,17 @@ public class AdminController {
 		return ResponseEntity.ok(jwt);
 	}
 
-	@Operation(summary = "List admins with pagination and filters")
+	@Operation(summary = "Get admins with pagination and filters")
 	@ApiResponse(responseCode = "200")
 	@PostMapping("/list")
-	public ResponseEntity<PageInfo<Admin>> list(@RequestBody AdminListDto adminListDto) {
+	public ResponseEntity<PageInfo<Admin>> get(@RequestBody AdminListDto adminListDto) {
 		return ResponseEntity.ok(adminService.list(adminListDto));
 	}
 
-	@Operation(summary = "Find the admin info by id")
+	@Operation(summary = "Get an admin by id")
 	@ApiResponse(responseCode = "200", description = "Return the admin info")
 	@GetMapping("/find/{id}")
-	public ResponseEntity<Admin> findById(@PathVariable Integer id) {
+	public ResponseEntity<Admin> get(@PathVariable Integer id) {
 		return ResponseEntity.ok(adminService.findById(id));
 	}
 

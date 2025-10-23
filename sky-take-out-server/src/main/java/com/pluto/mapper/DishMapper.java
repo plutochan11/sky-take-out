@@ -53,4 +53,6 @@ public interface DishMapper {
 	Integer deleteByIds(List<Integer> ids);
 
 	void update(Dish dish);
+
+	List<Dish> getBatch(List<Integer> ids);
 }

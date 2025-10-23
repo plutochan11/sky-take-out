@@ -13,7 +13,6 @@ mybatis:
     type-aliases-package: com.pluto.model
     configuration:
         map-underscore-to-camel-case: true
-        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #jwt:
 #      secret: thisdasdas-is-a-dsadasdvery-dasdlosadng-secret-for-jwt-generation-and-exposhuog-sadfes

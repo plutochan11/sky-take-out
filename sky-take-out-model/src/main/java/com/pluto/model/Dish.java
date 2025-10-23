@@ -2,13 +2,14 @@ package com.pluto.model;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Dish {
+public class Dish implements Serializable {
 	private Integer id;
 	private String name;
 	private Double price;
